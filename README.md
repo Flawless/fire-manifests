@@ -62,12 +62,9 @@ kubectl kustomize applications/fire/overlays/prod
 
 ## Required Secrets
 
-The `update-image.yml` workflow requires GitHub App credentials for write access:
+**This repository requires no secrets.** The workflow uses the default `GITHUB_TOKEN` which has write access to commit changes.
 
-- `APP_ID`: GitHub App ID
-- `APP_PRIVATE_KEY`: GitHub App private key
-
-Alternatively, you can replace the app token step with a `REPO_PAT` personal access token.
+The fire application repository needs a `MANIFESTS_PAT` secret with `repo` scope to trigger the `repository_dispatch` event.
 
 ## Deployment
 
