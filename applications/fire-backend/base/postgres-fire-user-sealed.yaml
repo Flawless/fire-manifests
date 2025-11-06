@@ -16,5 +16,5 @@ spec:
       name: postgres-fire-user
       namespace: fire-prod
       annotations:
-        argocd.argoproj.io/sync-wave: "-8"
+        argocd.argoproj.io/sync-wave: "-15"
     type: Opaque
