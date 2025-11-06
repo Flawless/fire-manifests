@@ -1,38 +1,20 @@
 ---
-# PLACEHOLDER: Generate this using kubeseal
-#
-# Steps to create:
-# 1. Create a plain secret file:
-#    kubectl create secret generic postgres-fire-user \
-#      --from-literal=username=fire-user \
-#      --from-literal=password=YOUR_PASSWORD \
-#      --from-literal=uri=postgresql://fire-user:YOUR_PASSWORD@fire-postgres-rw:5432/fire_db \
-#      --dry-run=client -o yaml > postgres-fire-user.yaml
-#
-# 2. Seal it:
-#    kubeseal -f postgres-fire-user.yaml -w postgres-fire-user-sealed.yaml \
-#      --controller-namespace=sealed-secrets \
-#      --controller-name=sealed-secrets
-#
-# 3. Replace this file with the sealed output
-#
 apiVersion: bitnami.com/v1alpha1
 kind: SealedSecret
 metadata:
   name: postgres-fire-user
   namespace: fire-prod
-  annotations:
-    argocd.argoproj.io/sync-wave: "-8"
 spec:
   encryptedData:
-    # Replace with actual sealed data
-    password: REPLACE_ME
-    uri: REPLACE_ME
-    username: REPLACE_ME
+    password: AgCqX6ea6NDQkDUMyvpgy/HWK5DaL599I35QFbGmrMI+MmE2BzJgQMnFaF91dO5V9vMSTjKpsIf1TSCM5c1KErWbLC+LNi4y5Un3IJoJ+o1r5bQoMlpYbDSB/IVgewTLU7hRqEbcAzPMQ9FvrZ1M3//Xd5kFzHBDXPhWHURKIybyhuY8kOqwY8E1sa6o2YGhW1BhJKAOzdMhJRu7fS3k9RaEiKGIGrsXN5mbLljAzZbRRPIR03fS8zk9jdJ858Tg1cmEXJNhsZVp1Es1cs1g4Bgk5FDVPKTh1NQYyUgdrtQwpvwjE4X6MTGFiGGhWWHQwCok9MtlloS2VuyJ3Nljbk/GFIMsULDXnedIQO37wYrtxEYGMZG1roQqgT9bRGY2EkHZk6mhkgh/x625KIxo2+G9s5loZMzbDGySGsMFz2PZytMYGQAA3nD84bOP+nMwfxKAWSq1iTpgx4ojOqzazyA8xbRYWRqeof+wdCnx9fgeyHcDJui6Ek5esXZbxSYf2xhAsDIhmDEhKWoZ7FuYZHZ4FJvVLrUOpwdsGcG0/5xNDL43dTvd5ChjyPF9eMVDwFGFMPjJ5AsC50w6VcYPnGrrMCikN6gxg03voR2Wz26IxuWclpu/3x8qpP+MbXfrrCuNCr4t/LxUxWfvlOvYQXlBK5tBoBjwQOAbyGn9qWDd94dkRLGOemYPZBz47+t1PZ40nl6t4smdXB7YiHXCBEfKtURZbt3aYFmVsR5k1ajClpCZGlnJkQ64YYY53w==
+    uri: AgCk+XHwkLTw+InmREqnONLMVbug0u+tvcchrvuuhb2XulBne4f52dEaDxgN8Js9rMG/egw2RuhANlNqWFOL1cube20V7T5Lh4EdCPp7lUGMGdgheKE0HMlxheTeW2AV/FaGgNTzGKtTsRVodTpiNAoEu8f0nTs0lQ0o1tOiZiVoNmPSes5d5HVI8ji6K2c65cJ2N+8ZMZDI3QPaFzkSkfyrXzuOD1UYUpS+z6gur1ePS9QXkuZfoJBGTSQzjloyk4I6IFEvBV9LwGCLQj5CR/ZEK3zMXNi0bCph/GzdZESQzI6C+73kKhSpjWlYXxFHdv08YpAaswmS4xb3G/KHbhGAmAtOllCWC91tozb9WVBqRJV7Pk1NXS9EimxSYv5RvDDnGRCuSb8khlWcoqhqzoC320wTIflMl1QBHSXoYgr7aUseRZtz4Xl3jlu4oLZ5qyxe1S6dpT+D18GebmX80m7yDKKDjn69gEVy2VETJnELOUVW6A7xZIQcYCKA++fqwl8cKMO7W7I73pxZ0hL09qEDSLT0WTPdlR/+DPc49Kkq/SDJP83t05+gjy7rqOaqIKCHwI8IQoiTI6CJWPE+m+cK0mHube4bqvPlphds7sFwYNRz4KeFxJHo62s1+HAi2e0R9+3ClakezrSjny6w8Z8hz4eMshzyW0xetwmijFjNimQbcSovoM6Z4j5iOGRs9dcPVQULacN02FVaQGEEzTfkP3HqNlmD24Ug2z1rd0qu6IK5LzszhxaqnjkyJSyRAyCAf7XGa74dEJvYbBN95JI1ZBeVOLCWt83fNUDlIIPLD98zGfN46Dt6AdMS1p/oEiwy
+    username: AgBWvho3mkriK81zg4sjv32sdxV9GFMpmgRtVkfDeySbJ/zhv9TYKkRg1cX6aqv+WGSJF2MFqyX9dA1lmPQv0uPEXrbHxDNynuZ9Kry0Pv9V3m2rD7lRjHv0LrHZIpQ1jcjgSQWbvMNxHw/M1dYuHFgWvTfhuIOJKl1nmq2e3bzp0L2VMH3L+p8jD50No/YKKyFTR1fkF4Qetu7ngcNwa7ToXdtBNSj+aG0gfWF50K4xof3CkDXE07mddx2LBSmG51YdRh5Blg2xHsAL9xD2sfFOwBKvGOSJGon4Zat3qi6Gg5P8Z/BxMMBbF7lKraX7MlXoYVslGLgS2UBWhfFhvDJxpZ9kC6dn7Pdw1IdOVtlZSNiXw9iHnsvqSE5alkyceb5tQYmL/4NoI9l48qkCP8745YJ1YsWJTAiuaSrpB9B+BmWPrzjzO01SoAkLyBO6aebzT9LGuJYfrLJV3ipS2nbAs+MihCbNWcJfnd5JORX4bHFglIK/xkhbmFjo50pnQceBJFlSH5grgxVStmcbiOua1l61yIX+tt2u9v91NAqn2U2pWot63zWIpGAtWuvsw8dL/fRxtJUiHNhl5P1yVu39mVZGxEG98MGM/zXuosmhwnkwJCdWiXtw8FVNPFrnbWaZCkDH61mJ4BVZr725E/oVA7AHbR3nXT8AXlSpjs0Dz6gpb3xVb1b8fJWVT58anFt/c0f3PdZZ2Tc=
   template:
     metadata:
       labels:
         cnpg.io/reload: "true"
       name: postgres-fire-user
       namespace: fire-prod
+      annotations:
+        argocd.argoproj.io/sync-wave: "-8"
     type: Opaque
