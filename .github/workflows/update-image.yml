@@ -115,8 +115,6 @@ jobs:
             exit 0
           fi
 
-          git commit -m "chore(${SERVICE}): update prod image to ${TAG}
-
-Triggered by commit: ${COMMIT}"
+          git commit -m "chore(${SERVICE}): update prod image to ${TAG}" -m "Triggered by commit: ${COMMIT}"
 
           git push origin master
