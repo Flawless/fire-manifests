@@ -1,0 +1,51 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: fire-postgres
+  annotations:
+    argocd.argoproj.io/sync-wave: "-10"
+spec:
+  instances: 1
+  imageName: ghcr.io/cloudnative-pg/postgresql:18.0
+
+  postgresql:
+    parameters:
+      max_connections: "100"
+      shared_buffers: "256MB"
+      effective_cache_size: "1GB"
+      work_mem: "16MB"
+
+  storage:
+    size: 20Gi
+
+  managed:
+    roles:
+    - name: fire-user
+      ensure: present
+      login: true
+      createdb: false
+      createrole: false
+      passwordSecret:
+        name: postgres-fire-user
+
+  # Uncomment when S3 backup credentials are ready
+  # backup:
+  #   retentionPolicy: "30d"
+  #   barmanObjectStore:
+  #     destinationPath: s3://your-bucket/fire
+  #     s3Credentials:
+  #       accessKeyId:
+  #         name: fire-backup-s3-credentials
+  #         key: AWS_ACCESS_KEY_ID
+  #       secretAccessKey:
+  #         name: fire-backup-s3-credentials
+  #         key: AWS_SECRET_ACCESS_KEY
+  #     wal:
+  #       compression: gzip
+  #       encryption: AES256
+  #     data:
+  #       compression: gzip
+  #       encryption: AES256
+
+  monitoring:
+    enablePodMonitor: true

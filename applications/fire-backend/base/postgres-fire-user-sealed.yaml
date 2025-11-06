@@ -1,0 +1,38 @@
+---
+# PLACEHOLDER: Generate this using kubeseal
+#
+# Steps to create:
+# 1. Create a plain secret file:
+#    kubectl create secret generic postgres-fire-user \
+#      --from-literal=username=fire-user \
+#      --from-literal=password=YOUR_PASSWORD \
+#      --from-literal=uri=postgresql://fire-user:YOUR_PASSWORD@fire-postgres-rw:5432/fire_db \
+#      --dry-run=client -o yaml > postgres-fire-user.yaml
+#
+# 2. Seal it:
+#    kubeseal -f postgres-fire-user.yaml -w postgres-fire-user-sealed.yaml \
+#      --controller-namespace=sealed-secrets \
+#      --controller-name=sealed-secrets
+#
+# 3. Replace this file with the sealed output
+#
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: postgres-fire-user
+  namespace: fire-prod
+  annotations:
+    argocd.argoproj.io/sync-wave: "-8"
+spec:
+  encryptedData:
+    # Replace with actual sealed data
+    password: REPLACE_ME
+    uri: REPLACE_ME
+    username: REPLACE_ME
+  template:
+    metadata:
+      labels:
+        cnpg.io/reload: "true"
+      name: postgres-fire-user
+      namespace: fire-prod
+    type: Opaque

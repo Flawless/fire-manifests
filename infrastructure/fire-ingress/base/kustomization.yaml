@@ -4,9 +4,4 @@ kind: Kustomization
 namespace: fire-prod
 
 resources:
-  - deployment.yaml
-  - service.yaml
-  - configmap.yaml
-
-commonLabels:
-  app: fire
+  - ingress.yaml

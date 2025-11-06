@@ -35,7 +35,17 @@ jobs:
           TAG="${{ steps.payload.outputs.tag }}"
           ENV="${{ steps.payload.outputs.environment }}"
 
-          KUSTOMIZE_FILE="applications/${SERVICE}/overlays/${ENV}/kustomization.yaml"
+          # Map service name to app directory
+          case "$SERVICE" in
+            "fire")
+              APP_DIR="fire-backend"
+              ;;
+            *)
+              APP_DIR="$SERVICE"
+              ;;
+          esac
+
+          KUSTOMIZE_FILE="applications/${APP_DIR}/overlays/${ENV}/kustomization.yaml"
 
           if [ ! -f "$KUSTOMIZE_FILE" ]; then
             echo "Error: $KUSTOMIZE_FILE not found"
@@ -58,7 +68,17 @@ jobs:
           TAG="${{ steps.payload.outputs.tag }}"
           COMMIT="${{ steps.payload.outputs.commit }}"
 
-          git add applications/${SERVICE}/overlays/prod/kustomization.yaml
+          # Map service name to app directory
+          case "$SERVICE" in
+            "fire")
+              APP_DIR="fire-backend"
+              ;;
+            *)
+              APP_DIR="$SERVICE"
+              ;;
+          esac
+
+          git add applications/${APP_DIR}/overlays/prod/kustomization.yaml
 
           if git diff --staged --quiet; then
             echo "No changes to commit"
