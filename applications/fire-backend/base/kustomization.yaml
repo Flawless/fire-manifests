@@ -4,6 +4,7 @@ kind: Kustomization
 namespace: fire-prod
 
 resources:
+  - ghcr-pull-secret-sealed.yaml
   - postgres-fire-user-sealed.yaml
   - database.yaml
   - deployment.yaml

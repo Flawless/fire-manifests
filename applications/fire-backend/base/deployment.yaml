@@ -16,6 +16,8 @@ spec:
       labels:
         app: fire
     spec:
+      imagePullSecrets:
+      - name: ghcr-pull-secret
       containers:
       - name: fire
         image: ghcr.io/flawless/fire:latest
