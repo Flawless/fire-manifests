@@ -3,6 +3,26 @@ name: Update Image
 on:
   repository_dispatch:
     types: [image_update]
+  workflow_dispatch:
+    inputs:
+      service:
+        description: 'Service name'
+        required: true
+        default: 'fire'
+      image:
+        description: 'Full image name with tag'
+        required: true
+      environment:
+        description: 'Environment'
+        required: true
+        default: 'prod'
+      commit:
+        description: 'Source commit SHA'
+        required: true
+      branch:
+        description: 'Source branch'
+        required: true
+        default: 'master'
 
 jobs:
   update:
@@ -18,14 +38,24 @@ jobs:
       - name: Parse payload
         id: payload
         run: |
-          echo "service=${{ github.event.client_payload.service }}" >> $GITHUB_OUTPUT
-          echo "image=${{ github.event.client_payload.image }}" >> $GITHUB_OUTPUT
-          echo "environment=${{ github.event.client_payload.environment }}" >> $GITHUB_OUTPUT
-          echo "commit=${{ github.event.client_payload.commit }}" >> $GITHUB_OUTPUT
-          echo "branch=${{ github.event.client_payload.branch }}" >> $GITHUB_OUTPUT
+          # Handle both repository_dispatch and workflow_dispatch
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "service=${{ github.event.inputs.service }}" >> $GITHUB_OUTPUT
+            echo "image=${{ github.event.inputs.image }}" >> $GITHUB_OUTPUT
+            echo "environment=${{ github.event.inputs.environment }}" >> $GITHUB_OUTPUT
+            echo "commit=${{ github.event.inputs.commit }}" >> $GITHUB_OUTPUT
+            echo "branch=${{ github.event.inputs.branch }}" >> $GITHUB_OUTPUT
+            IMAGE="${{ github.event.inputs.image }}"
+          else
+            echo "service=${{ github.event.client_payload.service }}" >> $GITHUB_OUTPUT
+            echo "image=${{ github.event.client_payload.image }}" >> $GITHUB_OUTPUT
+            echo "environment=${{ github.event.client_payload.environment }}" >> $GITHUB_OUTPUT
+            echo "commit=${{ github.event.client_payload.commit }}" >> $GITHUB_OUTPUT
+            echo "branch=${{ github.event.client_payload.branch }}" >> $GITHUB_OUTPUT
+            IMAGE="${{ github.event.client_payload.image }}"
+          fi
 
           # Extract tag from image (format: ghcr.io/flawless/fire:prod-abc123)
-          IMAGE="${{ github.event.client_payload.image }}"
           TAG="${IMAGE##*:}"
           echo "tag=${TAG}" >> $GITHUB_OUTPUT
 
