@@ -81,8 +81,8 @@ syncPolicy:
 ```
 
 **Note:** Sync waves ensure proper ordering:
+- Wave -15: Sealed Secret (must exist before Cluster reads it)
 - Wave -10: PostgreSQL Cluster
-- Wave -8: Sealed Secret
 - Wave -5: Database resource
 - Wave 2: Application deployment
 
