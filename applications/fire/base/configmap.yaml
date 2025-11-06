@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fire-config
+  labels:
+    app: fire
+data:
+  # Add configuration key-value pairs here as needed
+  # Example:
+  # LOG_LEVEL: "info"

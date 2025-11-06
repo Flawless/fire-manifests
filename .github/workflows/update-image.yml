@@ -1,0 +1,78 @@
+name: Update Image
+
+on:
+  repository_dispatch:
+    types: [image_update]
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate app token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          ref: master
+
+      - name: Parse payload
+        id: payload
+        run: |
+          echo "service=${{ github.event.client_payload.service }}" >> $GITHUB_OUTPUT
+          echo "image=${{ github.event.client_payload.image }}" >> $GITHUB_OUTPUT
+          echo "environment=${{ github.event.client_payload.environment }}" >> $GITHUB_OUTPUT
+          echo "commit=${{ github.event.client_payload.commit }}" >> $GITHUB_OUTPUT
+          echo "branch=${{ github.event.client_payload.branch }}" >> $GITHUB_OUTPUT
+
+          # Extract tag from image (format: ghcr.io/flawless/fire:prod-abc123)
+          IMAGE="${{ github.event.client_payload.image }}"
+          TAG="${IMAGE##*:}"
+          echo "tag=${TAG}" >> $GITHUB_OUTPUT
+
+      - name: Update kustomization
+        run: |
+          SERVICE="${{ steps.payload.outputs.service }}"
+          TAG="${{ steps.payload.outputs.tag }}"
+          ENV="${{ steps.payload.outputs.environment }}"
+
+          KUSTOMIZE_FILE="applications/${SERVICE}/overlays/${ENV}/kustomization.yaml"
+
+          if [ ! -f "$KUSTOMIZE_FILE" ]; then
+            echo "Error: $KUSTOMIZE_FILE not found"
+            exit 1
+          fi
+
+          # Update newTag in kustomization.yaml
+          sed -i.bak "s/newTag: .*/newTag: ${TAG}/" "$KUSTOMIZE_FILE"
+          rm -f "${KUSTOMIZE_FILE}.bak"
+
+          echo "Updated $KUSTOMIZE_FILE with tag: $TAG"
+          cat "$KUSTOMIZE_FILE"
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          SERVICE="${{ steps.payload.outputs.service }}"
+          TAG="${{ steps.payload.outputs.tag }}"
+          COMMIT="${{ steps.payload.outputs.commit }}"
+
+          git add applications/${SERVICE}/overlays/prod/kustomization.yaml
+
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          git commit -m "chore(${SERVICE}): update prod image to ${TAG}
+
+Triggered by commit: ${COMMIT}"
+
+          git push origin master
