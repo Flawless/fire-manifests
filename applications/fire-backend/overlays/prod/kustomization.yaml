@@ -6,4 +6,4 @@ resources:
 
 images:
   - name: ghcr.io/flawless/fire
-    newTag: prod-c2329d1e3e2a0f4267357d9315ce7adda7ed2b86
+    newTag: prod-1fe384312f8ecf127373bcab00604553ef3b90e5
